@@ -20,12 +20,12 @@ export class Utils {
       );
     }
 
-    if (billCode.length != 47 && billCode.length != 48) {
-      throw new BadRequestException(
-        'Linha digitável inválida',
-        this.error.INVALID_LENGTH,
-      );
-    }
+    // if (billCode.length != 47 && billCode.length != 48) {
+    //   throw new BadRequestException(
+    //     'Linha digitável inválida',
+    //     this.error.INVALID_LENGTH,
+    //   );
+    // }
 
     if (billCode.length === 47) {
       return this.billType[0];
@@ -35,10 +35,10 @@ export class Utils {
       return this.billType[1];
     }
 
-    throw new BadRequestException(
-      'Linha digitável inválida',
-      this.error.INVALID_FIRST_CHAR,
-    );
+    // throw new BadRequestException(
+    //   'Linha digitável inválida',
+    //   this.error.INVALID_FIRST_CHAR,
+    // );
   }
 
   getAmount(billCode: string): number {
@@ -50,23 +50,10 @@ export class Utils {
 
       return total;
     } else {
-      let index: any = billCode.substring(4, 14);
-      console.log(index + '     1');
-      index = billCode.split('');
-      console.log(index + '     2');
-      index = index.splice(11, 1);
-      console.log(index + '     3');
-      index = index.join('');
-      console.log(index + '     4');
-      index = index.substring(4, 11)
-      console.log(index + '     5');
+      let blockWithoutDV = this.removeDV(billCode)
+      let total = Number(blockWithoutDV.substring(4, 15)) / 100;
 
-      var blocks = [];
-
-      blocks[0] = billCode.substring(0, 12);
-      blocks[1] = billCode.substring(12, 12);
-      blocks[2] = billCode.substring(24, 12);
-      blocks[3] = billCode.substring(36, 12);
+      return total;
     }
   }
 
@@ -79,7 +66,7 @@ export class Utils {
 
     baseDate.setFullYear(1997, 9, 7);
 
-    if (this.billType[0]) {
+    if (billCode.length === 47) {
       let index5 = billCode.substring(33, 47);
       let expiryFactor = parseInt(index5.substring(0, 4));
 
@@ -91,16 +78,17 @@ export class Utils {
       return date;
     }
 
-    if (this.billType[1]) {
-      let expiryFactor = parseInt(billCode.substring(5, 9));
+    if (billCode.length === 48) {
 
-      const timestamp = expiryDate.setTime(
-        baseDate.getTime() + 1000 * 60 * 60 * 24 * expiryFactor,
-      );
+      let clearCode = this.removeDV(billCode);
+      console.log(clearCode);
+      // const timestamp = expiryDate.setTime(
+      //   baseDate.getTime() + 1000 * 60 * 60 * 24 * expiryFactor,
+      // );
 
-      const date = new Date(timestamp);
+      // const date = new Date(timestamp);
 
-      return date;
+      // return date;
     }
   }
 
@@ -141,34 +129,15 @@ export class Utils {
     return digito != 10 ? digito : 0;
   }
 
-  identificarReferencia = (billCode: string) => {
+  removeDV(billCode: string) {
     billCode = billCode.replace(/[^0-9]/g, '');
 
-    const referencia = billCode.substring(2, 1);
-
-    switch (referencia) {
-      case '6':
-        return {
-          mod: 10,
-          efetivo: true,
-        };
-      case '7':
-        return {
-          mod: 10,
-          efetivo: false,
-        };
-      case '8':
-        return {
-          mod: 11,
-          efetivo: true,
-        };
-      case '9':
-        return {
-          mod: 11,
-          efetivo: false,
-        };
-      default:
-        break;
-    }
-  };
+    billCode =
+      billCode.substring(0, 11) +
+      billCode.substring(12, 23) +
+      billCode.substring(24, 35) +
+      billCode.substring(36, 47);
+    
+    return billCode;
+  }
 }
