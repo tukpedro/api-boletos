@@ -1,27 +1,30 @@
 import { BadRequestException } from '@nestjs/common';
 import { MessagesError } from '../errors/message-errors';
 export class Utils {
-  constructor(private readonly billType: string[], private readonly error: MessagesError) {
+  constructor(
+    private readonly billType: string[],
+    private readonly error: MessagesError,
+  ) {
     this.error = new MessagesError();
-    
-    this.billType = [
-      'Linha Digitável Título',
-      'Linha Digitável Convênio',
-    ];
+
+    this.billType = ['Linha Digitável Título', 'Linha Digitável Convênio'];
   }
 
   validate(billCode: string): string {
     billCode = billCode.replace(/[ -.]/g, '');
 
     if (isNaN(Number(billCode))) {
-      throw new BadRequestException('Linha digitável inválida', this.error.NUMBER_ONLY);
+      throw new BadRequestException(
+        'Linha digitável inválida',
+        this.error.NUMBER_ONLY,
+      );
     }
 
-    if (
-      billCode.length != 47 &&
-      billCode.length != 48
-    ) {
-      throw new BadRequestException('Linha digitável inválida', this.error.INVALID_LENGTH);
+    if (billCode.length != 47 && billCode.length != 48) {
+      throw new BadRequestException(
+        'Linha digitável inválida',
+        this.error.INVALID_LENGTH,
+      );
     }
 
     if (billCode.length === 47) {
@@ -32,27 +35,43 @@ export class Utils {
       return this.billType[1];
     }
 
-    throw new BadRequestException('Linha digitável inválida: Linhas Digitáveis de convênio começam com 8');
+    throw new BadRequestException(
+      'Linha digitável inválida',
+      this.error.INVALID_FIRST_CHAR,
+    );
   }
 
   getAmount(billCode: string): number {
     billCode = billCode.replace(/[ .]/g, '');
 
-    if (this.billType[0]) {
-      let index5 = billCode.substring(33, 47);
-      let total = parseFloat(index5.substring(4, 15)) / 100;
+    if (billCode.length === 47) {
+      let index = billCode.substring(33, 47);
+      let total = parseFloat(index.substring(4, 15)) / 100;
 
       return total;
+    } else {
+      let index: any = billCode.substring(4, 14);
+      console.log(index + '     1');
+      index = billCode.split('');
+      console.log(index + '     2');
+      index = index.splice(11, 1);
+      console.log(index + '     3');
+      index = index.join('');
+      console.log(index + '     4');
+      index = index.substring(4, 11)
+      console.log(index + '     5');
+
+      var blocks = [];
+
+      blocks[0] = billCode.substring(0, 12);
+      blocks[1] = billCode.substring(12, 12);
+      blocks[2] = billCode.substring(24, 12);
+      blocks[3] = billCode.substring(36, 12);
     }
-
-    if (this.billType[1]) return 1;
-
   }
 
   getExpiryDate(billCode: string): Date {
     billCode = billCode.replace(/[ .]/g, '');
-
-    const type = this.validate(billCode);
 
     let baseDate = new Date();
 
@@ -60,7 +79,7 @@ export class Utils {
 
     baseDate.setFullYear(1997, 9, 7);
 
-    if (type[0] === 'L') {
+    if (this.billType[0]) {
       let index5 = billCode.substring(33, 47);
       let expiryFactor = parseInt(index5.substring(0, 4));
 
@@ -72,7 +91,7 @@ export class Utils {
       return date;
     }
 
-    if (type[0] === 'B') {
+    if (this.billType[1]) {
       let expiryFactor = parseInt(billCode.substring(5, 9));
 
       const timestamp = expiryDate.setTime(
@@ -121,4 +140,35 @@ export class Utils {
 
     return digito != 10 ? digito : 0;
   }
+
+  identificarReferencia = (billCode: string) => {
+    billCode = billCode.replace(/[^0-9]/g, '');
+
+    const referencia = billCode.substring(2, 1);
+
+    switch (referencia) {
+      case '6':
+        return {
+          mod: 10,
+          efetivo: true,
+        };
+      case '7':
+        return {
+          mod: 10,
+          efetivo: false,
+        };
+      case '8':
+        return {
+          mod: 11,
+          efetivo: true,
+        };
+      case '9':
+        return {
+          mod: 11,
+          efetivo: false,
+        };
+      default:
+        break;
+    }
+  };
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Utils } from '../shared/utils/utils';
+import { Utils } from './shared/utils/utils';
 @Injectable()
 export class AppService {
   constructor(private readonly utils: Utils) {}
@@ -11,19 +11,19 @@ export class AppService {
 
     console.log(validate);
 
-      // let t = '34191.75637 13969.782526 50451.630003 1 000'.replace(/[ -.]/g, '');
+    // let t = '34191.75637 13969.782526 50451.630003 1 000'.replace(/[ -.]/g, '');
 
-      // console.log(billCode);
-      // console.log(t);
-      // console.log(t.length);
+    // console.log(billCode);
+    // console.log(t);
+    // console.log(t.length);
 
-      // const m = this.utils.module10(t);
-      // console.log(m)
+    // const m = this.utils.module10(t);
+    // console.log(m)
 
-      console.log(billCode);
-      console.log(billCode.length);
+    console.log(billCode);
+    console.log(billCode.length);
 
-    // const value = this.utils.getAmount(billCode);
+    const value = this.utils.getAmount(billCode);
     // console.log(value);
 
     // const expiry = this.utils.getExpiryDate(billCode);
@@ -33,8 +33,4 @@ export class AppService {
     //   const barCode = this.utils.getBarCode(billCode);
     //   console.log(barCode);
   }
-
-  // if (validate[0] === 'B') {
-  // }
-  // }
 }
