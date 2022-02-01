@@ -7,32 +7,30 @@ export class AppService {
   billInfo(billCode: string) {
     billCode = billCode.replace(/[ -.]/g, '');
 
-    // const validate = this.utils.validate(billCode);
-    // console.log(validate);
+    let payload: { barCode: string; amount: string; expirationDate: string } = {
+      barCode: '',
+      amount: '',
+      expirationDate: '',
+    };
 
-    // const clean = this.utils.removeDV(billCode);
-    // console.log(clean);
+    this.utils.verifyCode(billCode);
 
-    // let t = '34191.75637 13969.782526 50451.630003 1 000'.replace(/[ -.]/g, '');
-
-    // console.log(billCode);
-    // console.log(t);
-    // console.log(t.length);
-
-    // const m = this.utils.module10(t);
-    // console.log(m)
-
-    // console.log(billCode);
-    // console.log(billCode.length);
-
-    const value = this.utils.getAmount(billCode);
-    console.log(value);
-
-    const expiry = this.utils.getExpiryDate(billCode);
-    // console.log(expiry);
-
+    this.utils.validateDV(billCode);
     
-    // const barCode = this.utils.getBarCode(billCode);
-    // console.log(barCode);
+    const barCode = this.utils.getBarCode(billCode);
+    payload.barCode = barCode;
+    
+    const amount = this.utils.getAmount(billCode);
+    payload.amount = String(amount.toFixed(2));
+    
+    const expiry = this.utils
+      .getExpiryDate(billCode)
+      .toLocaleString('pt-BR', { timeZone: 'UTC' });
+    
+    if (expiry[0] === 'N') payload.expirationDate = expiry;
+    
+    else payload.expirationDate = expiry.substring(0, 10);
+
+    return payload;
   }
 }
