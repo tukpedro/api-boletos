@@ -63,6 +63,15 @@ $ yarn dev
 ```bash
 localhost:8080/boleto/<linhaDigitavel>
 ```
+## Response
+
+```json
+{
+    "barCode": "xxxxxxxxxxxxxx",
+    "amount": "xxx.xx",
+    "expirationDate": "xx/xx/xxxx"
+}
+```
 ## Stay in touch
 
 - Author - [Pedro Pastuk](https://github.com/tukpedro)
