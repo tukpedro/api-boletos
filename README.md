@@ -24,7 +24,14 @@
 
 ## Description
 
-API que faz leitura de Linhas Digitáveis de Título e de Convênio
+API que faz leitura de Linhas Digitáveis de Título e de Convênio, retornando os dados:
+
+<ul>
+<li>Código de Barras</li>
+<li>Valor</li>
+<li>Vencimento</li>
+</ul>
+
 ## Título
 
 ```bash
