@@ -60,7 +60,7 @@ $ yarn dev
 
 ## Request
 
-```bash
+```http
 localhost:8080/boleto/<linhaDigitavel>
 ```
 ## Response
