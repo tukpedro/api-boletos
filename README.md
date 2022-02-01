@@ -28,12 +28,12 @@ API que faz leitura de Linhas Digitáveis de Título e de Convênio, retornando 
 
 ## Título
 
-```json
+```bash
 21290.00119 21100.012109 04475.617405 9 75870000002000
 ```
 ## Convênio
 
-```json
+```bash
 84880000001-9 44040158202-1 20210142823-4 10100712122-3
 ```
 ## Installation
@@ -54,7 +54,7 @@ $ yarn dev
 
 ## Request
 
-```http
+```json
 localhost:8080/boleto/<linhaDigitavel>
 ```
 ## Response
