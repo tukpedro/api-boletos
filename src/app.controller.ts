@@ -6,7 +6,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get(':billCode')
-  getBoleto(@Param('billCode') billCode: string) {
+  billInfo(@Param('billCode') billCode: string) {
     return this.appService.billInfo(billCode);
   }
 }
