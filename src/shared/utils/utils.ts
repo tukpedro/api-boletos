@@ -1,4 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
+import { throwError } from 'rxjs';
 import { MessagesError } from '../errors/message-errors';
 export class Utils {
   constructor(
@@ -135,69 +136,22 @@ export class Utils {
         baseDate.getTime() + 1000 * 60 * 60 * 24 * expiryFactor,
       );
       const date = new Date(timestamp);
+      console.log(date);
 
-      return date;
+      return `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()}`;
     }
 
-    // if (billCode.length === 48 && Number(billCode[20]) === 2) {
-    //   let clearCode = this.removeDV(billCode);
+    if (billCode.length === 48 && Number(billCode[20]) === 2) {
+      let clearCode = this.removeDV(billCode);
 
-    //   let expiration = clearCode.substring(19, 27);
+      let expiration = clearCode.substring(19, 27);
 
-    //   let day = Number(expiration.substring(6, 8));
-    //   let month = Number(expiration.substring(4, 6));
-    //   let year = Number(expiration.substring(0, 4));
+      let day = Number(expiration.substring(6, 8));
+      let month = Number(expiration.substring(4, 6));
+      let year = Number(expiration.substring(0, 4));
 
-    //   const date = new Date(year, month - 1, day);
-
-    //   return date;
-    // }
-
-    if (billCode.length === 48) {
-      billCode = (this.removeDV(billCode)).substring();
-      console.log(billCode.length);
-    }
-
-    return this.error.DATE;
-  }
-
-  toLineCode(billCode: string) {
-    billCode = this.removeDV(billCode.replace(/[ .]/g, ''));
-    console.log(billCode.length);
-
-    const reference = billCode.substring(2, 1);
-    console.log(reference);
-
-    let block1 =
-      billCode.substring(0, 4) +
-      billCode.substring(19, 20) +
-      '.' +
-      billCode.substring(20, 24);
-    let block2 = billCode.substring(24, 29) + billCode.substring(29, 34);
-    let block3 = billCode.substring(34, 39) + billCode.substring(39, 44);
-    let block4 = billCode.substring(4, 5);
-    let block5 = billCode.substring(5, 19);
-
-    if (
-      this.modulo11(billCode.substring(0, 4) + billCode.substring(5, 44)) !=
-      Number(block4)
-    )
-      return 'ERROOOOO'; //'Digito verificador '+campo4+', o correto é '+modulo11_banco(  billCode.substr(0,4)+linha.substr(5,99)  )+'\nO sistema não altera automaticamente o dígito correto na quinta casa!'
-
-    let lineCode =
-      block1 +
-      this.modulo10(block1) +
-      ' ' +
-      block2 +
-      this.modulo10(block2) +
-      ' ' +
-      block3 +
-      this.modulo10(block3) +
-      ' ' +
-      block4 +
-      block5;
-    
-    return lineCode;
+      return `${day}/${month}/${year}`;
+    } else return this.error.DATE;
   }
 
   getBarCode(billCode: any): string {

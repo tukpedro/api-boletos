@@ -8,7 +8,7 @@ export class MessagesError {
     
     public INVALID_DV: string = 'Dígitos Verificadores não correspondem com o cálculo';
     
-    public BAR_CODE: string = 'Não foi possível calcular o Código de Barras';
+    public BAR_CODE: string = 'Não foi possível obter o Código de Barras';
     
-    public DATE: string = 'Não foi possível calcular a data de vencimento';
+    public DATE: string = 'Não foi possível obter a data de vencimento';
 }

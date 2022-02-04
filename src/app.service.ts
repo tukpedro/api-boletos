@@ -7,30 +7,14 @@ export class AppService {
   billInfo(billCode: string) {
     billCode = billCode.replace(/[ -.]/g, '');
 
-    let payload: { barCode: string; amount: string; expirationDate: string } = {
-      barCode: '',
-      amount: '',
-      expirationDate: '',
-    };
-
     this.utils.verifyCode(billCode);
 
     this.utils.validateDV(billCode);
-    
-    const barCode = this.utils.getBarCode(billCode);
-    payload.barCode = barCode;
-    
-    const amount = this.utils.getAmount(billCode);
-    payload.amount = String(amount.toFixed(2));
-    
-    const expiry = this.utils
-      .getExpiryDate(billCode)
-      .toLocaleString('pt-BR', { timeZone: 'UTC' });
-    
-    if (expiry[0] === 'N') payload.expirationDate = expiry;
-    
-    else payload.expirationDate = expiry.substring(0, 10);
 
-    return payload;
+    return {
+      barCode: this.utils.getBarCode(billCode),
+      amount: String(this.utils.getAmount(billCode).toFixed(2)),
+      expirationDate: this.utils.getExpiryDate(billCode)
+    };
   }
 }
